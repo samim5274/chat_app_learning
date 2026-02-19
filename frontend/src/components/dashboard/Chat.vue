@@ -1,27 +1,39 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "axios";
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import api from "../../services/api";
 import { echo } from "../../echo";
 
 const text = ref("");
-const messages = ref([]);
+const message = ref([]);
+let channel = null;
 
 async function sendMsg() {
   if (!text.value.trim()) return;
 
-  await axios.post("http://localhost:8000/api/send", {
-    message: text.value,
-  });
+  try{
+    await api.post("/send", {
+      message: text.value,
+    });
 
-  text.value = "";
+    text.value = "";
+  } catch (err){
+    console.error("Send failed:", err);
+    alert(err?.response?.data?.message || "Send failed (check backend/API URL)");
+  }
 }
 
 onMounted(() => {
-  echo.channel("chat")
-    .listen(".message.sent", (e) => {
-      console.log("Received:", e.message);
-      messages.value.push(e.message);
-    });
+  channel = echo.channel("chat");
+  channel.listen(".message.sent", (e) => {
+    message.value.push(e.message);
+  });
+});
+
+onBeforeUnmount(() => {
+  if (channel) {
+    channel.stopListening(".message.sent");
+    echo.leave("chat");
+  }
 });
 </script>
 
@@ -32,7 +44,7 @@ onMounted(() => {
 
     <!-- Message List -->
     <div style="border:1px solid #ccc;height:300px;overflow:auto;padding:10px;margin-bottom:10px">
-      <div v-for="(msg,index) in messages" :key="index" style="margin-bottom:5px">
+      <div v-for="(msg,index) in message" :key="index" style="margin-bottom:5px">
         {{ msg }}
       </div>
     </div>
