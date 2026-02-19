@@ -8,4 +8,4 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/send', [ChatController::class, 'send']);
+// Route::get('/send', [ChatController::class, 'send']);
