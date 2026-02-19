@@ -1,0 +1,182 @@
+/*--- vue js and tailwind project create code --- */
+
+step-1:
+npm create vite@latest
+
+step-2:
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+/*--- if face any error then try this tailwind --- */
+npm install -D tailwindcss@3 postcss autoprefixer
+npx tailwindcss init -p
+
+
+/*--- vue js setup route axios --- */
+npm install vue-router@4
+npm install axios
+
+/*--- chat app design --- */
+<template>
+    <div>
+        <!-- header -->
+        <div class="bg-white border-b border-gray-300 fixed top-0 w-full shadow-md">
+            <div class="lg:container mx-auto p-4">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="col-span-1 min-w[250px]">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <img :src="fileLink('me1.jpg')" alt="User" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                                <span class=" font-semibold text-xl pl-1">Shamim Hossain</span>
+                            </div>
+                            <div class="relative inline-block text-left group">
+                                <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
+                                <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
+                                    <div class="py-1">
+                                        <a href="" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer">Profile</a>
+                                        <a href="" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer">Logout</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-2 text-right">
+                        <button class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-[90px] lg:container mx-auto px-4 mb-4">
+            <div class="grid grid-cols-3 gap-4">
+                <div class="col-span-1 min-w[300px] bg-white shadow-md rounded-md p-4 focus:outline-none focus:ring focus:border-red-300">
+                    <!-- chat search -->
+                    <input type="searh" placeholder="Search" class="w-full p-2 rounded-md border border-gray-300 mb-4">
+
+                    <!-- chat list -->
+                    <div class="max-h-96 overflow-y-auto">
+                        <div class="flex p-2 items-center mb-3 cursor-pointer hover:bg-gray-100 rounded-md">
+                            <div class=" relative">
+                                <img :src="fileLink('me2.png')" alt="User" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                                <div class=" absolute h-3 w-3 bg-green-500 rounded-full -top-1.5 -left-1.5 ml-2"></div>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Shamim Hossain</p>
+                                <p class=" text-gray-700">Hello</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="max-h-96 overflow-y-auto">
+                        <div class="flex p-2 items-center mb-3 cursor-pointer hover:bg-gray-100 rounded-md">
+                            <div class=" relative">
+                                <img :src="fileLink('me2.png')" alt="User" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                                <div class=" absolute h-3 w-3 bg-gray-400 rounded-full -top-1.5 -left-1.5 ml-2"></div>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Shamim Hossain</p>
+                                <p class=" text-gray-700">Hello</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="max-h-96 overflow-y-auto">
+                        <div class="flex p-2 items-center mb-3 cursor-pointer hover:bg-gray-100 rounded-md">
+                            <div class=" relative">
+                                <img :src="fileLink('me2.png')" alt="User" class="w-12 h-12 rounded-full border-2 border-blue-400">
+                                <div class=" absolute h-3 w-3 bg-green-500 rounded-full -top-1.5 -left-1.5 ml-2"></div>
+                            </div>
+                            <div class="ml-3">
+                                <p class="font-semibold">Shamim Hossain</p>
+                                <p class=" text-gray-700">Hello</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-span-2 min-w[300px] bg-slate-50 shadow-md rounded-md">
+
+                    <div v-if="isChatOpen">
+
+                        <!-- chat header -->
+                        <div>
+                            <div class=" flex items-center justify-between mb-4 bg-slate-200 px-4 pt-2 pb-2 rounded-tl-md rounded-tr-md">
+                                <div class="flex items-center">
+                                    <img :src="fileLink('me2.png')" alt="User" class="w-12 h-12 rounded-full border-2 border-green-400">
+                                    <div class="ml-3">
+                                        <p class="font-semibold">Shamim Hossain</p>
+                                        <p class=" text-gray-700">Online</p>
+                                    </div>
+                                </div>
+                                <div class="relative inline-block text-left group">
+                                    <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
+                                    <div class="origin-top-right absolute right-0 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 hidden group-hover:block">
+                                        <div class="py-1">
+                                            <a href="" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer">Close Chat</a>
+                                            <a href="" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 cursor-pointer">Clear chat</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- chat body -->
+                        <div class=" overflow-y-auto max-h-64 min-h-[19rem] px-4">
+                            <div class="flex items-center mb-4">
+                                <img :src="fileLink('me2.png')" alt="User" class="w-6 h-6 rounded-full border-2 border-blue-400 mr-2">
+                                <div class="text-sm p-2 shadow-md bg-white rounded-md max-w-xs relative group">
+                                    Lorem ipsum dolor sit amet.
+                                    <div class="absolute top-1/2 -translate-y-1/2 left-full ml-2 hidden group-hover:block bg-gray-600 py-1 px-1.5 rounded z-50 text-white w-max">12:00 pm</div>
+                                </div>
+                                <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
+                            </div>
+                            <div class="flex items-center justify-end mb-4">
+                                <i class="fa-solid fa-ellipsis-vertical cursor-pointer"></i>
+                                <div class="text-sm p-2 shadow-md bg-indigo-100 rounded-md max-w-xs relative group">
+                                    Lorem ipsum dolor sit amet.
+                                    <div class="absolute top-1/2 -translate-y-1/2 right-full mr-2 hidden group-hover:block bg-gray-600 py-1 px-1.5 rounded z-50 text-white w-max">12:00 pm</div>
+                                </div>
+                                <img :src="fileLink('me1.jpg')" alt="User" class="w-6 h-6 rounded-full border-2 border-blue-400 ml-2">
+                            </div>
+                        </div>
+
+                        <!-- chat footer -->
+                        <div class="p-4 flex items-center bg-white rounded-bl-md rounded-br-md">
+                            <input type="searh" placeholder="Search" class="w-full p-2 rounded-md border border-gray-300">
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md disabled:bg-gray-400 ml-2" disabled><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+
+                    <div v-else class="flex flex-col items-center justify-center min-h-[19rem]">
+                        <img :src="fileLink('logo.png')" alt="" class="w-auto h-28">
+                        <p class=" text-2xl font-semibold mt-4">ARS Soft Solution</p>
+                        <p class=" text-gray-500">Select a chat to start</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+
+export default{
+    name: 'ChatApp',
+    data(){
+        return{
+            isChatOpen: true,
+        }
+    },
+    methods:{
+        logout(){},
+        
+        fileLink(file){
+            return '/img/' + file;
+        },
+    },
+}
+</script>
+
+<style>
+
+</style>

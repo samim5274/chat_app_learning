@@ -1,0 +1,197 @@
+
+/*--- laravel & vue js project setup. for chat app (websocket and reverb) --- */
+
+/* --- 01: laravel setup ---*/
+composer create-project laravel/laravel {folder name} "^11.0" --prefer-dist
+
+/* --- Note: for Api install --- */
+php artisan install:api
+composer require laravel/sanctum
+php artisan migrate
+
+/* --- 02: reverb setup ---*/
+composer require laravel/reverb
+php artisan reverb:install
+
+    এটা automatically setup করবে:
+    config/broadcasting.php
+    config/reverb.php
+    .env update করবে
+
+    BROADCAST_CONNECTION=reverb
+
+    REVERB_APP_ID=app-id
+    REVERB_APP_KEY=app-key
+    REVERB_APP_SECRET=app-secret
+
+    REVERB_HOST=127.0.0.1
+    REVERB_PORT=8080
+    REVERB_SCHEME=http
+
+    php artisan config:clear
+    php artisan cache:clear
+
+/* --- 03: create event ---*/
+php artisan make:event MessageSent
+
+    open:
+    app/Events/MessageSent.php
+
+    update:
+    use Illuminate\Broadcasting\Channel;
+    use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+
+    class MessageSent implements ShouldBroadcast
+    {
+        public $message;
+
+        public function __construct($message)
+        {
+            $this->message = $message;
+        }
+
+        public function broadcastOn()
+        {
+            return new Channel('chat');
+        }
+
+        public function broadcastAs()
+        {
+            return 'message.sent';
+        }
+    }
+
+    use App\Events\MessageSent;
+
+    public function send()
+    {
+        $message = "Hello from Laravel";
+
+        broadcast(new MessageSent($message));
+
+        return response()->json([
+            "status" => "success",
+            "message" => $message
+        ]);
+    }
+
+/* --- 04: run reverb ---*/
+php artisan reverb:start
+
+
+/* --- 04: Setup vue js with tailwind ---*/
+npm create vite@latest my-vue-app -- --template vue
+cd my-vue-app
+npm install
+
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
+
+/* --- Note: If error setup for tailwind setup ---*/
+npm install -D tailwindcss@3 postcss autoprefixer
+npx tailwindcss init -p
+
+    tailwind.config.js ফাইলে content এইভাবে:
+    /** @type {import('tailwindcss').Config} */
+    export default {
+        content: [
+            "./index.html",
+            "./src/**/*.{vue,js,ts,jsx,tsx}",
+        ],
+        theme: {
+            extend: {},
+        },
+        plugins: [],
+    }
+
+    src/style.css (Vite default থাকে) — এটাতে Tailwind directives:
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    src/main.js এ এটা থাকা লাগবে:
+    import { createApp } from 'vue'
+    import './style.css'
+    import App from './App.vue'
+
+    createApp(App).mount('#app')
+
+/* --- 05: vuejs pusher install ---*/
+npm install laravel-echo pusher-js
+
+/* --- 06: Create echo.js file of src/echo.js ---*/
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
+window.Pusher = Pusher;
+
+export const echo = new Echo({
+    broadcaster: "reverb",
+    key: "app-key",
+    wsHost: "127.0.0.1",
+    wsPort: 8080,
+    forceTLS: false,
+    disableStats: true,
+});
+
+/* --- Vue component এ echo.js file listen ---*/
+import Echo from "laravel-echo";
+import Pusher from "pusher-js";
+
+window.Pusher = Pusher;
+
+console.log("VITE KEY:", import.meta.env.VITE_REVERB_APP_KEY);
+
+export const echo = new Echo({
+    broadcaster: "reverb",
+    key: import.meta.env.VITE_REVERB_APP_KEY, // MUST NOT be undefined
+    wsHost: import.meta.env.VITE_REVERB_HOST || "127.0.0.1",
+    wsPort: Number(import.meta.env.VITE_REVERB_PORT || 8080),
+    forceTLS: false,
+    enabledTransports: ["ws"],
+});
+
+Laravel .env এ দাও:
+QUEUE_CONNECTION=sync
+
+app/Events/MessageSent.php এ এটা বদলাও:
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+class MessageSent implements ShouldBroadcastNow
+
+fronent .env এ দাও:
+VITE_REVERB_APP_KEY=nqbp61c4mpnllmdcv2ro
+VITE_REVERB_HOST=127.0.0.1
+VITE_REVERB_PORT=8080
+VITE_REVERB_SCHEME=http
+
+/* --- 06: Run vue js project ---*/
+npm run dev
+
+frontent এ দাও
+./src/services/api.js
+./src/router/index.js
+
+
+/* --- 07: Router install ---*/
+npm install vue-router@4
+
+and main js
+createApp(App).use(router).mount('#app')
+
+and app.vue
+<template>
+    <router-view />
+</template>
+
+create home.vue
+<template>
+  <div>
+    <h1>Home Page</h1>
+    <router-link to="/login">Go Login</router-link>
+  </div>
+</template>
+
+
+/* --- 08: axios install ---*/
+npm install axios
+
