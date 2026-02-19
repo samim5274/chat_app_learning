@@ -9,6 +9,10 @@ php artisan install:api
 composer require laravel/sanctum
 php artisan migrate
 
+config/cors.php file create
+php artisan config:publish cors
+
+
 /* --- 02: reverb setup ---*/
 composer require laravel/reverb
 php artisan reverb:install

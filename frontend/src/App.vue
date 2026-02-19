@@ -1,16 +1,16 @@
 <script setup>
 import { onMounted, ref } from "vue";
-import { echo } from "./echo.js";
+import { getEcho } from "./echo.js";
 
 const messages = ref([]);
-
+const echo = getEcho();
 echo.channel("chat").listen(".message.sent", (e) => {
     messages.value.push(e.message);
 });
 
 onMounted(() => {
-  console.log("👂 Listening started");
-
+  console.log("Listening started");
+  
   echo.connector.pusher.connection.bind("connected", () => {
     console.log("✅ WS Connected");
   });

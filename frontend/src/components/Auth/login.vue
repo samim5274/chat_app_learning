@@ -89,6 +89,7 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import api from '../../services/api';
+import { refreshEcho } from "../../echo";
 
 const router = useRouter();
 
@@ -126,8 +127,9 @@ async function submitLogin() {
 
         // save token
         localStorage.setItem("token", res.data.token);
+        refreshEcho(res.data.token); 
         localStorage.setItem("user", JSON.stringify(res.data.user));    
-        router.push("/dashboard");
+        router.push("/chat");
     } catch (err){
         const status = err?.response?.status;
         const data = err?.response?.data;
