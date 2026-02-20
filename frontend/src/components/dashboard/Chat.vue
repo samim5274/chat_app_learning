@@ -31,6 +31,9 @@ async function openChat(user) {
   const m = await api.get(`/chat/conversations/${conversationId.value}/messages`);
   messages.value = m.data.data;
 
+  const info = await api.get(`/chat/conversations/${conversationId.value}`);
+  console.log("conversation info:", info.data.data); // participants
+
   startListening(conversationId.value);
 }
 
