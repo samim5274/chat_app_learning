@@ -36,8 +36,10 @@ class MessageController extends Controller
             'body' => $request->body,
         ]);
 
-        broadcast(new MessageSent($message))->toOthers();
+        $message->load('sender:id,name,email');
 
-        return response()->json(['success'=>true,'data'=>$message->load('sender')], 201);
+        broadcast(new MessageSent($message, $conversation->id))->toOthers();
+
+        return response()->json(['success' => true, 'data' => $message], 201);
     }
 }

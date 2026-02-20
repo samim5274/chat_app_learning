@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getEcho } from "../echo";
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,11 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) config.headers.Authorization = `Bearer ${token}`;
+
+    const echo = getEcho();
+    const sid = echo?.socketId?.();
+    if (sid) config.headers["X-Socket-Id"] = sid;
+    
     return config;
 });
 

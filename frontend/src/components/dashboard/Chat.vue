@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import api from "../../services/api";
-import { getEcho } from "../../echo";
+import { getEcho, refreshEcho } from "../../echo";
 
 const users = ref([]);
 const activeUser = ref(null);
@@ -35,8 +35,9 @@ async function openChat(user) {
 }
 
 function startListening(id) {
+  const token = localStorage.getItem("token");
+  refreshEcho(token);
   const echo = getEcho();
-
   // leave previous conversation channel
   if (channel && currentId) {
     channel.stopListening(".message.sent");
@@ -48,6 +49,7 @@ function startListening(id) {
   channel = echo
     .private(`conversation.${id}`)
     .listen(".message.sent", (e) => {
+      if (messages.value.some((x) => x.id === e.message.id)) return;
       console.log("📩 realtime:", e);
       messages.value.push(e.message);
     });

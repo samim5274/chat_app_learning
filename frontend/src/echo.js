@@ -18,7 +18,7 @@ function buildEcho(token) {
         forceTLS: false,
         enabledTransports: ["ws", "wss"],
 
-        authEndpoint: `${API_ROOT}/broadcasting/auth`,
+        authEndpoint: `${API_ROOT}/api/broadcasting/auth`,
         auth: {
         headers: {
             Accept: "application/json",

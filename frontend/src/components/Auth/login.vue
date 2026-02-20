@@ -127,7 +127,7 @@ async function submitLogin() {
 
         // save token
         localStorage.setItem("token", res.data.token);
-        refreshEcho(res.data.token); 
+        refreshEcho(res.data.token);
         localStorage.setItem("user", JSON.stringify(res.data.user));    
         router.push("/chat");
     } catch (err){

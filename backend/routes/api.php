@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Chat\UserController;
 use App\Http\Controllers\Api\Chat\ConversationController;
 use App\Http\Controllers\Api\Chat\MessageController;
+use Illuminate\Support\Facades\Broadcast;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -33,3 +34,7 @@ Route::middleware(['auth:sanctum', 'throttle:60,1'])->group(function (){
     });
 
 });
+
+Route::post('/broadcasting/auth', function (Request $request) {
+    return Broadcast::auth($request);
+})->middleware(['auth:sanctum']);
